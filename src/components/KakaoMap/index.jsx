@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk'
 
-const KakaoMap = () => {
+const KakaoMap = (place) => {
     const [positions, setPositions] = useState([]);
     const clusterPositionsData = {"positions" : [
         {
@@ -13,6 +13,7 @@ const KakaoMap = () => {
           "lng": 126.92536526611102
         }]}
     useEffect(() => {
+
       setPositions(clusterPositionsData.positions);
     },[])
   
