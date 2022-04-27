@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { mainApi } from "../../api/Api";
+import KakaoMap from "../../components/KakaoMap";
 
 const Home = () => {
   useEffect(() => {
@@ -8,6 +9,7 @@ const Home = () => {
   return (
     <div>
       화재발생 장소, 시간
+      <KakaoMap />
     </div>
   );
 };
