@@ -6,7 +6,7 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 export const mainApi = async() => {
 
   return instance({
-    url: `/getOcBysidoFireSmrzPcnd?serviceKey=${API_KEY}&pageNo=1&numOfRows=20&resultType=json&ocrn_ymd=20220103`,
+    url: `/getOcBysidoFireSmrzPcnd?serviceKey=${API_KEY}&pageNo=1&numOfRows=17&resultType=json&ocrn_ymd=20220103`,
     method: 'GET',
   });
 };
