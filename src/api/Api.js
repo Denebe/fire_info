@@ -3,10 +3,10 @@ import instance from './ApiController';
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 //시도별 화재발생현황
-export const mainApi = async() => {
+export const mainApi = async(mdate) => {
 
   return instance({
-    url: `/getOcBysidoFireSmrzPcnd?serviceKey=${API_KEY}&pageNo=1&numOfRows=17&resultType=json&ocrn_ymd=20220103`,
+    url: `/getOcBysidoFireSmrzPcnd?serviceKey=${API_KEY}&pageNo=1&numOfRows=17&resultType=json&ocrn_ymd=${mdate}`,
     method: 'GET',
   });
 };
