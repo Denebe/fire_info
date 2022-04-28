@@ -21,8 +21,10 @@ const KakaoMap = () => {
     geocoder.addressSearch(db[i].sidoNm, function (result, status) {
       if (status === kakao.maps.services.Status.OK) {
         var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-        var text = [];
-        text.push(db[i].fireRcptMnb);
+        var city = [];
+        city.push(db[i].sidoNm);
+        var count = [];
+        count.push(db[i].fireRcptMnb);
 
         let marker = new kakao.maps.Marker({
           map: map,
@@ -30,7 +32,7 @@ const KakaoMap = () => {
         });
 
         var infowindow = new kakao.maps.InfoWindow({
-          content: `<div style="width:30px;text-align:center;padding:6px 0;">${text}</div>`,
+          content: `<div style="width:150px;text-align:center;padding:6px 0;">${city + ' : ' + count}</div>`,
         });
         infowindow.open(map, marker);
       }
@@ -39,8 +41,7 @@ const KakaoMap = () => {
 
   const dateChange = (e) => {
     setDate(e.target.value)
-    setMdate(e.target.value.replace(/\-/g, ''))
-    console.log(e.target.value.replace(/\-/g, ''))
+    setMdate(e.target.value.replace(/-/g, ''))
   }
 
   useEffect(() => {
@@ -62,15 +63,15 @@ const KakaoMap = () => {
       <Map // 지도를 표시할 Container
         center={{
           // 지도의 중심좌표
-          lat: 36.2683,
-          lng: 128.6358,
+          lat: 37.2683,
+          lng: 127.6358,
         }}
         style={{
           // 지도의 크기
           width: "100%",
           height: "500px",
         }}
-        level={13} // 지도의 확대 레벨
+        level={11} // 지도의 확대 레벨
         onCreate={setMap}
       ></Map>
     </Styled.Container>
