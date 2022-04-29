@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { mainApi } from "../../api/Api";
 import * as Styled from "./styled";
 import { Map } from "react-kakao-maps-sdk";
+import { useNavigate } from "react-router-dom";
 
 const { kakao } = window;
 
@@ -10,11 +11,21 @@ const { kakao } = window;
 //text로 화재가 몇번 발생했는지 보여준다.
 
 const KakaoMap = () => {
+  let navigate = useNavigate();
   const [db, setData] = useState([]);
   const [map, setMap] = useState();
 
-  const [date, setDate] = useState('2022-04-10');
-  const [mdate, setMdate] = useState('20220410')
+  const [date, setDate] = useState("2022-04-10");
+  const [mdate, setMdate] = useState("20220410");
+
+  const markerClick = (city) => {
+    navigate("detail", {
+      state: {
+        city: city,
+        date: mdate,
+      },
+    });
+  };
 
   var geocoder = new kakao.maps.services.Geocoder();
   for (let i = 0; i < db.length; i++) {
@@ -29,10 +40,18 @@ const KakaoMap = () => {
         let marker = new kakao.maps.Marker({
           map: map,
           position: coords,
+          clickable: true,
+        });
+
+        kakao.maps.event.addListener(marker, "click", function () {
+          // 마커 위에 인포윈도우를 표시합니다
+          markerClick(db[i].sidoNm);
         });
 
         var infowindow = new kakao.maps.InfoWindow({
-          content: `<div style="width:150px;text-align:center;padding:6px 0;">${city + ' : ' + count}</div>`,
+          content: `<div style="width:150px;text-align:center;padding:6px 0;" >${
+            city + " : " + count
+          }</div>`,
         });
         infowindow.open(map, marker);
       }
@@ -40,9 +59,9 @@ const KakaoMap = () => {
   }
 
   const dateChange = (e) => {
-    setDate(e.target.value)
-    setMdate(e.target.value.replace(/-/g, ''))
-  }
+    setDate(e.target.value);
+    setMdate(e.target.value.replace(/-/g, ""));
+  };
 
   useEffect(() => {
     mainApi(mdate).then((data) => setData(data));

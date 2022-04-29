@@ -19,3 +19,12 @@ export const placeApi = async() => {
     method: 'GET',
   });
 };
+
+//인명피해 화재발생
+export const peopleApi = async(mdate) => {
+
+  return instance({
+    url: `getOcBysidoFpcnd?serviceKey=${API_KEY}&pageNo=1&numOfRows=100&resultType=json&ocrn_ymd=${mdate}`,
+    method: 'GET',
+  });
+};

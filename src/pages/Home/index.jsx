@@ -5,9 +5,9 @@ const Home = () => {
 
   
   return (
-    <div>
+    <>
       <KakaoMap />
-    </div>
+    </>
   );
 };
 
