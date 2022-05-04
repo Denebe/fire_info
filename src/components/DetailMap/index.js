@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { centerApi } from "../../api/Api";
 import * as Styled from "./styled";
-import { Map } from "react-kakao-maps-sdk";
+import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { useNavigate } from "react-router-dom";
+
+let marker = [];
 
 const { kakao } = window;
 
@@ -13,13 +15,15 @@ const { kakao } = window;
 const DetailMap = (props) => {
   let navigate = useNavigate();
   const [db, setData] = useState([]);
-  const [wow, setWow] = useState([])
+
+  const [info, setInfo] = useState();
+  const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
 
   const [date, setDate] = useState("2022-04-10");
   const [mdate, setMdate] = useState("20220410");
 
-  console.log(props.props.city.slice(0,2))
+  console.log(props.props.city.slice(0, 2));
   const markerClick = (city) => {
     navigate("detail", {
       state: {
@@ -29,71 +33,47 @@ const DetailMap = (props) => {
     });
   };
 
-  const onClick = () => {
-
-    for (let i = 0; i < db.length; i++) {
-
-        if(db[i].sidoHqFrstCetrNm.slice(0,2) == props.props.city.slice(0,2)){
-
-            setWow(db[i])
-            console.log(wow)
-
-            
-        }
-    }
-
-  }
-
-//   var geocoder = new kakao.maps.services.Geocoder();
-//   for (let i = 0; i < db.length; i++) {
-//         geocoder.addressSearch('서울', function (result, status) {
-//             console.log(db[i].frstCetrNm)
-//             if (status === kakao.maps.services.Status.OK) {
-//               var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-//               var city = [];
-//               city.push(db[i].frstCetrNm);
-//               var count = [];
-//               count.push(db[i].sidoHqFrstCetrNm);
-      
-//               let marker = new kakao.maps.Marker({
-//                 map: map,
-//                 position: coords,
-//                 clickable: true,
-//               });
-      
-//               kakao.maps.event.addListener(marker, "click", function () {
-//                 // 마커 위에 인포윈도우를 표시합니다
-//                 markerClick(db[i].frstCetrNm);
-//               });
-      
-//               var infowindow = new kakao.maps.InfoWindow({
-//                 content: `<div style="width:150px;text-align:center;padding:6px 0;" >${
-//                   city + " : " + count
-//                 }</div>`,
-//               });
-//               infowindow.open(map, marker);
-//             }
-//           });
-//   }
-
   const dateChange = (e) => {
     setDate(e.target.value);
     setMdate(e.target.value.replace(/-/g, ""));
   };
 
   useEffect(() => {
-      centerApi(mdate).then((data) => setData(data));
-  }, [mdate]);
+    const ps = new kakao.maps.services.Places();
+    for (let i = 0; i < db.length; i++) {
+      if (db[i].sidoHqFrstCetrNm.slice(0, 2) == props.props.city.slice(0, 2)) {
+        ps.keywordSearch(
+          db[i].frstCetrNm,
+          (data, status, _pagination) => {
+            if (status === kakao.maps.services.Status.OK) {
 
+                marker.push({
+                  position: {
+                    lat: data[0].y,
+                    lng: data[0].x,
+                  },
+                  content: data[0].place_name,
+                  random: Math.random()
+                });
+
+                setMarkers(marker);
+            }
+          }
+        );
+      }
+    }
+
+  }, [db ,mdate]);
+
+  useEffect(() => {
+    centerApi(mdate).then((data) => setData(data));
+  }, [mdate]);
 
   return (
     <Styled.Container>
       <Styled.BannerWrapper>
         <Styled.BannerTitle>전국 화재 발생 지역/횟수</Styled.BannerTitle>
 
-<button onClick={onClick}>
-    ddd
-</button>
         <Styled.DateChoice
           type="date"
           value={date}
@@ -101,20 +81,30 @@ const DetailMap = (props) => {
           max="2022-04-10"
         ></Styled.DateChoice>
       </Styled.BannerWrapper>
-      <Map // 지도를 표시할 Container
+      <Map // 로드뷰를 표시할 Container
         center={{
-          // 지도의 중심좌표
-          lat: 37.2683,
-          lng: 127.6358,
+          lat: 37.566826,
+          lng: 126.9786567,
         }}
         style={{
-          // 지도의 크기
           width: "100%",
           height: "500px",
         }}
-        level={11} // 지도의 확대 레벨
+        level={12}
         onCreate={setMap}
-      ></Map>
+      >
+        {markers.map((marker) => (
+          <MapMarker
+            key={marker.random}
+            position={marker.position}
+            onClick={() => setInfo(marker)}
+          >
+            {info && info.content === marker.content && (
+              <div style={{ color: "#000" }}>{marker.content}</div>
+            )}
+          </MapMarker>
+        ))}
+      </Map>
     </Styled.Container>
   );
 };
