@@ -22,7 +22,7 @@ const KakaoMap = () => {
     navigate("detail", {
       state: {
         city: city,
-        date: mdate,
+        wdate: mdate,
       },
     });
   };

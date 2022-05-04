@@ -11,6 +11,14 @@ export const mainApi = async(mdate) => {
   });
 };
 
+//소방서 화재발생현황
+export const centerApi = async(mdate) => {
+  return instance({
+    url: `/getOcByfrstFireSmrzPcnd?serviceKey=${API_KEY}&pageNo=1&numOfRows=200&resultType=json&ocrn_ymd=${mdate}`,
+    method: 'GET',
+  });
+};
+
 //지역별 화재발생
 export const placeApi = async() => {
 
