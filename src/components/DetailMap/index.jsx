@@ -3,7 +3,6 @@ import { centerApi } from "../../api/Api";
 import * as Styled from "./styled";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { useNavigate } from "react-router-dom";
-
 let marker = [];
 
 const { kakao } = window;
@@ -23,6 +22,10 @@ const DetailMap = (props) => {
   const [date, setDate] = useState("2022-04-10");
   const [mdate, setMdate] = useState("20220410");
 
+
+  const onClick = () => {
+      navigate('/')
+  }
   console.log(props.props.city.slice(0, 2));
   const markerClick = (city) => {
     navigate("detail", {
@@ -40,30 +43,26 @@ const DetailMap = (props) => {
 
   useEffect(() => {
     const ps = new kakao.maps.services.Places();
+
     for (let i = 0; i < db.length; i++) {
       if (db[i].sidoHqFrstCetrNm.slice(0, 2) == props.props.city.slice(0, 2)) {
-        ps.keywordSearch(
-          db[i].frstCetrNm,
-          (data, status, _pagination) => {
-            if (status === kakao.maps.services.Status.OK) {
+        ps.keywordSearch(db[i].frstCetrNm, (data, status, _pagination) => {
+          if (status === kakao.maps.services.Status.OK) {
+            marker.push({
+              position: {
+                lat: data[0].y,
+                lng: data[0].x,
+              },
+              content: data[0].place_name,
+              random: Math.random(),
+            });
 
-                marker.push({
-                  position: {
-                    lat: data[0].y,
-                    lng: data[0].x,
-                  },
-                  content: data[0].place_name,
-                  random: Math.random()
-                });
-
-                setMarkers(marker);
-            }
+            setMarkers(marker);
           }
-        );
+        });
       }
     }
-
-  }, [db ,mdate]);
+  }, [db, mdate]);
 
   useEffect(() => {
     centerApi(mdate).then((data) => setData(data));
@@ -73,7 +72,9 @@ const DetailMap = (props) => {
     <Styled.Container>
       <Styled.BannerWrapper>
         <Styled.BannerTitle>전국 화재 발생 지역/횟수</Styled.BannerTitle>
-
+        <button onClick={onClick}>
+            뒤로가기
+        </button>
         <Styled.DateChoice
           type="date"
           value={date}
@@ -94,14 +95,8 @@ const DetailMap = (props) => {
         onCreate={setMap}
       >
         {markers.map((marker) => (
-          <MapMarker
-            key={marker.random}
-            position={marker.position}
-            onClick={() => setInfo(marker)}
-          >
-            {info && info.content === marker.content && (
-              <div style={{ color: "#000" }}>{marker.content}</div>
-            )}
+          <MapMarker key={marker.random} position={marker.position}>
+            <div style={{ color: "#000" }}>{marker.content}</div>
           </MapMarker>
         ))}
       </Map>

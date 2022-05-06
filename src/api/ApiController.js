@@ -4,7 +4,6 @@ const PROXY_URL = window.location.hostname === 'localhost' ? '' : '/proxy';
 
 const instance = axios.create({
   baseURL: `${PROXY_URL}`,
-  timeout: 5000,
 });
 
 instance.interceptors.request.use(

@@ -82,15 +82,15 @@ const KakaoMap = () => {
       <Map // 지도를 표시할 Container
         center={{
           // 지도의 중심좌표
-          lat: 37.2683,
+          lat: 36.2683,
           lng: 127.6358,
         }}
         style={{
           // 지도의 크기
           width: "100%",
-          height: "500px",
+          height: "900px",
         }}
-        level={11} // 지도의 확대 레벨
+        level={13} // 지도의 확대 레벨
         onCreate={setMap}
       ></Map>
     </Styled.Container>
